@@ -1,0 +1,20 @@
+%%% Terms of the STLC
+
+%% Terms are intrinsically typed.
+
+tm : ty -> type.
+
+lam : (tm A -> tm B)
+%     --------------
+   -> tm (A => B).
+
+app : tm (A => B) -> tm A
+%     -------------------
+   -> tm B.
+
+
+%% Some terms are values (ground terms).
+
+is-val : tm A -> type.
+
+is-val/lam : is-val (lam M).

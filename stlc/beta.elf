@@ -1,0 +1,23 @@
+%%% Beta reduction
+
+%% Call by value semantics.
+%% Because terms are intrinsically typed, this gives us type preservation
+%% for free.
+
+%% Beta reduction
+
+~> : tm A -> tm A -> type.
+%infix left 5 ~>.
+
+% Head reduction
+~>/head : app M N ~> app M' N
+          <- M ~> M'.
+
+% Argument reduction
+~>/arg : app M N ~> app M N'
+         <- N ~> N'
+         <- is-val M.
+
+% Lambda application
+~>/lam : app (lam M) N ~> M N
+         <- is-val N.

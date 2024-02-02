@@ -1,0 +1,55 @@
+%%% Progress of reduction.
+
+%% This proves that beta reduction makes progress
+%% i.e. every term either is a value, or can reduce.
+
+prog : tm A -> type.
+
+prog/val : is-val E -> prog E.
+prog/stp : (E ~> E') -> prog E.
+
+
+%% Progress states that for every term `E`, there is an inhabitant of `prog E`.
+
+progress : {E : tm A} prog E -> type.
+%mode progress +E -P.
+
+%% A naive solution will fall afoul of the coverage checker in the application case: 
+%{
+_ : progress (lam M) (prog/val is-val/lam).
+
+_ : progress (app M N) (prog/stp (~>/head P))
+    <- progress M (prog/stp P).
+
+    Error: Missing case for `progress (lam M) (...)` for rule above.
+    Of course this case is covered in the first case, but Twelf cannot tell.
+
+_ : progress (app M N) (prog/stp (~>/arg P Q))
+    <- progress N (prog/stp Q)
+    <- progress M (prog/val P).
+
+_ : progress (app (lam M) N) (prog/stp (~>/lam P))
+    <- progress N (prog/val P).
+}%
+
+%% Solution: Factor out the application cases.
+
+progress-app : prog M -> prog N -> prog (app M N) -> type.
+%mode progress-app +PM +PN -PMN.
+
+progress-app/head : progress-app (prog/stp P) _            (prog/stp (~>/head P)).
+progress-app/arg  : progress-app (prog/val P) (prog/stp Q) (prog/stp (~>/arg P Q)).
+progress-app/lam  : progress-app (prog/val P) (prog/val Q) (prog/stp (~>/lam Q)).
+
+%worlds () (progress-app _ _ _).
+%total [PM PN] (progress-app PM PN _).
+
+
+progress/val : progress (lam M) (prog/val is-val/lam).
+progress/stp : progress (app M N) Q
+               <- progress M PM
+               <- progress N PN
+               <- progress-app PM PN Q.
+
+%worlds () (progress _ _).
+%total E (progress E _).

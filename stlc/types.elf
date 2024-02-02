@@ -1,0 +1,9 @@
+%%% Types
+
+%% Simple types.
+
+ty : type.
+
+=> : ty -> ty -> ty.    %% Functions.
+
+%infix right 10 =>.
