@@ -1,7 +1,7 @@
 %%%%% Progress of small-step semantics %%%%%
 
-%{  A proof of the progress of small-step operational semantics.
-    A term is either a value, or it can be reduced.  }%
+%{  A proof of the progress of small-step operational semantics:
+    a term is either a value, or it can take a step.  }%
 
 prog : tm A -> type.
 
@@ -32,13 +32,13 @@ progress\@ : prog M -> prog N -> prog (M @ N) -> type.
 
 %% Lemma: Type application progresses
 
-% We need to explicitly pass `A` here to mark it as universal, otherwise
-% Twelf doesn't know what A to use.
+% We need to explicitly pass `A` here to mark it as universal,
+% otherwise Twelf doesn't know what A to use.
 
 progress\# : prog P -> {A : tp} prog (P # A) -> type.
 %mode progress\# +PP +A -PPA.
 
-- : progress\# (prog/step  PM) A (prog/step (~>/#head PM)).
+- : progress\# (prog/step  PP) A (prog/step (~>/#head PP)).
 - : progress\# (prog/value  _) A (prog/step ~>/#Lam).
 
 %worlds () (progress\# _ _ _).

@@ -4,7 +4,7 @@
     Terms are intrinsically typed, so the definition is also a proof
     of preservation.  }%
 
-~> : tm A -> tm A -> type.  %infix left 5 ~>.
+~> : tm A -> tm A -> type.      %infix left 5 ~>.
 
 % Head reduction under application
 ~>/@head : M @ N ~> M' @ N
@@ -16,7 +16,7 @@
            <- N ~> N'.
 
 % Lambda application
-~>/@lam  : (lam M) @ N ~> M N
+~>/@lam  : (lam E) @ N ~> E N
            <- is-value N.
 
 % Head reduction under type application
