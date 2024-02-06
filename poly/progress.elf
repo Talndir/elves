@@ -1,0 +1,69 @@
+%%%%% Progress of small-step semantics %%%%%
+
+%{  A proof of the progress of small-step operational semantics.
+    A term is either a value, or it can be reduced.  }%
+
+prog : tm A -> type.
+
+prog/step  : M ~> M' -> prog M.
+prog/value : is-value M -> prog M.
+
+%freeze prog.
+
+
+%%% Progress %%%
+
+%{  To prove progress, we induct on the structure of the term.
+    Terms of the form `M @ N` and `P # A` have multiple possible reduction
+    rules, so we factor them into lemmas.  }%
+
+%% Lemma: Application progresses
+
+progress\@ : prog M -> prog N -> prog (M @ N) -> type.
+%mode progress\@ +PM +PN -PMN.
+
+- : progress\@ (prog/step  PM) _               (prog/step (~>/@head PM)).
+- : progress\@ (prog/value VM) (prog/step  PN) (prog/step (~>/@arg  PN VM)).
+- : progress\@ (prog/value  _) (prog/value PN) (prog/step (~>/@lam  PN)).
+
+%worlds () (progress\@ _ _ _).
+%total [PM PN] (progress\@ PM PN _).
+
+
+%% Lemma: Type application progresses
+
+% We need to explicitly pass `A` here to mark it as universal, otherwise
+% Twelf doesn't know what A to use.
+
+progress\# : prog P -> {A : tp} prog (P # A) -> type.
+%mode progress\# +PP +A -PPA.
+
+- : progress\# (prog/step  PM) A (prog/step (~>/#head PM)).
+- : progress\# (prog/value  _) A (prog/step ~>/#Lam).
+
+%worlds () (progress\# _ _ _).
+%total [PP A] (progress\# PP A _).
+
+
+%% Main theorem: terms progress
+
+progress : {M : tm A} prog M -> type.
+%mode progress +M -P.
+
+% We induct on the structure of `M`.
+
+- : progress (lam E) (prog/value is-value/lam).
+
+- : progress (Lam P) (prog/value is-value/Lam).
+
+- : progress (M @ N) PMN
+    <- progress M PM
+    <- progress N PN
+    <- progress\@ PM PN PMN.
+
+- : progress (P # A) PPA
+    <- progress P PP
+    <- progress\# PP A PPA.
+
+%worlds () (progress _ _).
+%total [M] (progress M _).

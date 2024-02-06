@@ -1,0 +1,12 @@
+%%%%% Type system %%%%%
+
+%{  Standard polymorphic type system.
+    There is no distinction between types and schemes.  }%
+
+tp : type.                  %name tp A a.
+
+u  : tp.                    % Unit type
+=> : tp -> tp -> tp.        %infix right 10 =>.
+pi : (tp -> tp) -> tp.      % Forall type
+
+%freeze tp.

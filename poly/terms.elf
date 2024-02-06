@@ -1,0 +1,26 @@
+%%%%% Terms of the calculus %%%%%
+
+%{  Standard term language.
+    Intrinsically typed.
+    Explicit type abstraction and application.
+    No *syntactic* distinction between values and computations.  }%
+
+tm : tp -> type.                        %name tm E e.
+
+lam : (tm A -> tm B) -> tm (A => B).
+@   : tm (A => B) -> tm A -> tm B.       %infix left 10 @.
+Lam : ({a : tp} tm (P a)) -> tm (pi P).
+#   : tm (pi P) -> {A : tp} tm (P A).    %infix left 10 #.
+
+%freeze tm.
+
+%%% Value judgement %%%
+
+%{  Some terms are values. These are the 'ground' terms that cannot reduce.  }%
+
+is-value : tm A -> type.
+
+is-value/lam  : is-value (lam E).
+is-value/Lam : is-value (Lam P).
+
+%freeze is-value.

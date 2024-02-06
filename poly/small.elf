@@ -1,0 +1,29 @@
+%%%%% Small-step operational semantics %%%%%
+
+%{  Call-by-value small-step operational semantics.
+    Terms are intrinsically typed, so the definition is also a proof
+    of preservation.  }%
+
+~> : tm A -> tm A -> type.  %infix left 5 ~>.
+
+% Head reduction under application
+~>/@head : M @ N ~> M' @ N
+           <- M ~> M'.
+
+% Argument reduction under application
+~>/@arg  : M @ N ~> M @ N'
+           <- is-value M
+           <- N ~> N'.
+
+% Lambda application
+~>/@lam  : (lam M) @ N ~> M N
+           <- is-value N.
+
+% Head reduction under type application
+~>/#head : P # A ~> P' # A
+           <- P ~> P'.
+
+% Type variable application
+~>/#Lam  : (Lam P) # A ~> P A.
+
+%freeze ~>.
